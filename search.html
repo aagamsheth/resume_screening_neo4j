@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Search & Analysis System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #fff;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #fff, #e6f3ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1em;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        .section h2 {
+            color: #fff;
+            margin-bottom: 25px;
+            font-size: 1.6em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #fff;
+            font-size: 1em;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            color: #333;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: rgba(255, 255, 255, 0.6);
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        .range-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        .range-value {
+            position: absolute;
+            top: -35px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            transform: translateX(-50%);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-tertiary {
+            background: linear-gradient(45deg, #17a2b8, #138496);
+            color: white;
+        }
+
+        .btn-tertiary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn:disabled {
+            background: rgba(150, 150, 150, 0.5);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-success {
+            background: rgba(40, 167, 69, 0.2);
+            color: #fff;
+            border: 1px solid rgba(40, 167, 69, 0.5);
+        }
+
+        .status-error {
+            background: rgba(220, 53, 69, 0.2);
+            color: #fff;
+            border: 1px solid rgba(220, 53, 69, 0.5);
+        }
+
+        .candidate-card {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .candidate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .candidate-info h3 {
+            color: #fff;
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .candidate-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .matched-content {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #4facfe;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .candidate-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .tag:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .navigation {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .nav-link {
+            color: #4facfe;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #00f2fe;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .candidate-header {
+                flex-direction: column;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .candidate-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Resume Search & Analysis</h1>
+            <p>Search through candidate profiles and analyze resumes with AI-powered matching</p>
+        </div>
+
+        <div class="navigation">
+            <a href="upload.html" class="nav-link">← Back to Upload</a>
+        </div>
+
+        <div class="section">
+            <h2>🔍 Search Resumes</h2>
+            <form id="searchForm">
+                <div class="form-group">
+                    <label for="searchQuery">Search Query:</label>
+                    <textarea id="searchQuery" placeholder="e.g., skills python&#10;location India&#10;role software developer" required></textarea>
+                    <div id="searchTags" class="search-tags" style="display: none;">
+                        <span class="tag" onclick="insertTag('Name')">Name</span>
+                        <span class="tag" onclick="insertTag('Email')">Email</span>
+                        <span class="tag" onclick="insertTag('Phone number')">Phone number</span>
+                        <span class="tag" onclick="insertTag('Skills')">Skills</span>
+                        <span class="tag" onclick="insertTag('Location')">Location</span>
+                        <span class="tag" onclick="insertTag('Education')">Education</span>
+                        <span class="tag" onclick="insertTag('Role')">Role</span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fromExperience">From Experience (years):</label>
+                        <input type="number" id="fromExperience" min="0" max="50" placeholder="5" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="toExperience">To Experience (years):</label>
+                        <input type="number" id="toExperience" min="0" max="50" placeholder="15" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="similarityThreshold">Similarity Threshold: <span id="thresholdValue">0.4</span></label>
+                    <div class="range-container">
+                        <input type="range" id="similarityThreshold" class="range-slider" min="0" max="1" step="0.01" value="0.4">
+                        <div class="range-value" id="rangeValue">0.4</div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <span id="searchText">Search Candidates</span>
+                    <div id="searchLoading" class="loading" style="display: none;"></div>
+                </button>
+            </form>
+            <div id="searchStatus"></div>
+        </div>
+
+        <div id="resultsSection" style="display: none;">
+            <div class="section">
+                <h2>📋 Search Results</h2>
+                <div id="candidateResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const analysisStates = {};
+
+        const searchInput = document.getElementById('searchQuery');
+        const searchTags = document.getElementById('searchTags');
+
+        searchInput.addEventListener('focus', function() {
+            searchTags.style.display = 'flex';
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !searchTags.contains(e.target)) {
+                searchTags.style.display = 'none';
+            }
+        });
+
+        function insertTag(tagText) {
+            const currentValue = searchInput.value;
+            const newValue = currentValue ? currentValue + '\n' + tagText.toLowerCase() : tagText.toLowerCase();
+            searchInput.value = newValue;
+            searchInput.focus();
+        }
+
+        const slider = document.getElementById('similarityThreshold');
+        const thresholdValue = document.getElementById('thresholdValue');
+        const rangeValue = document.getElementById('rangeValue');
+
+        slider.addEventListener('input', function() {
+            const value = this.value;
+            thresholdValue.textContent = value;
+            rangeValue.textContent = value;
+            
+            const percent = (value - this.min) / (this.max - this.min) * 100;
+            rangeValue.style.left = percent + '%';
+        });
+
+        document.getElementById('searchForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const searchQuery = document.getElementById('searchQuery').value;
+            const fromExperience = parseInt(document.getElementById('fromExperience').value);
+            const toExperience = parseInt(document.getElementById('toExperience').value);
+            const similarityThreshold = parseFloat(document.getElementById('similarityThreshold').value);
+            const searchStatus = document.getElementById('searchStatus');
+            const searchText = document.getElementById('searchText');
+            const searchLoading = document.getElementById('searchLoading');
+            
+            if (fromExperience > toExperience) {
+                showStatus(searchStatus, 'From experience cannot be greater than to experience', 'error');
+                return;
+            }
+            
+            searchText.style.display = 'none';
+            searchLoading.style.display = 'inline-block';
+            
+            const searchData = {
+                search_query: searchQuery,
+                from_experience: fromExperience,
+                to_experience: toExperience,
+                similarity_threshold: similarityThreshold
+            };
+            
+            try {
+                const response = await fetch('http://0.0.0.0:8000/search/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(searchData)
+                });
+                
+                if (response.status === 200) {
+                    const data = await response.json();
+                    displaySearchResults(data);
+                    showStatus(searchStatus, `Found ${data.length} candidate(s)`, 'success');
+                } else {
+                    showStatus(searchStatus, 'Search failed', 'error');
+                    document.getElementById('resultsSection').style.display = 'none';
+                }
+            } catch (error) {
+                showStatus(searchStatus, 'Search failed - Network error', 'error');
+                document.getElementById('resultsSection').style.display = 'none';
+            } finally {
+                searchText.style.display = 'inline';
+                searchLoading.style.display = 'none';
+            }
+        });
+
+        function displaySearchResults(candidates) {
+            const resultsSection = document.getElementById('resultsSection');
+            const candidateResults = document.getElementById('candidateResults');
+            
+            if (candidates.length === 0) {
+                candidateResults.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.8); font-size: 1.2em; padding: 40px;">No candidates found matching your criteria.</p>';
+                resultsSection.style.display = 'block';
+                return;
+            }
+            
+            candidateResults.innerHTML = candidates.map((candidate, index) => {
+                const candidateId = candidate.id !== undefined ? candidate.id : index;
+                
+                return `
+                    <div class="candidate-card">
+                        <div class="candidate-header">
+                            <div class="candidate-info">
+                                <h3>${candidate.name}</h3>
+                                <div class="candidate-stats">
+                                    <div class="stat-item">Experience: ${candidate.years_experience} years</div>
+                                    <div class="stat-item">Match: ${(candidate.total_score * 100).toFixed(1)}%</div>
+                                    <div class="stat-item">Phone: ${candidate.phone}</div>
+                                    <div class="stat-item">Email: ${candidate.email}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="matched-content">
+                            <strong>Current Designation:</strong> ${candidate.current_designation}
+                            <br>
+                            <strong>Last/Current Employer:</strong> ${candidate.current_company}
+                        </div>
+                        
+                        <div class="candidate-actions">
+                            <button class="btn btn-secondary" onclick="downloadResume('${candidate.resume_path}')">
+                                📥 Download Resume
+                            </button>
+                            <button class="btn btn-tertiary" 
+                                    id="analyzeBtn_${candidateId}"
+                                    onclick="analyzeResume('${candidate.resume_path}', ${candidateId})">
+                                📊 Analyze
+                            </button>
+                            <button class="btn btn-tertiary" 
+                                    id="downloadAnalysis_${candidateId}" 
+                                    onclick="downloadAnalysis(${candidateId})" 
+                                    disabled 
+                                    style="display: none;">
+                                📈 Download Analysis
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            resultsSection.style.display = 'block';
+        }
+
+        function downloadResume(resumePath) {
+            window.open(resumePath, '_blank');
+        }
+
+        // Fixed analyze resume function with proper escaping
+        async function analyzeResume(resumePath, candidateId) {
+            const analyzeBtn = document.getElementById(`analyzeBtn_${candidateId}`);
+            const originalText = analyzeBtn.innerHTML;
+            
+            analyzeBtn.innerHTML = '⏳ Analyzing...';
+            analyzeBtn.disabled = true;
+            
+            // Get the search query and properly escape it
+            const searchQuery = document.getElementById('searchQuery').value;
+            
+            const requestData = {
+                resume_path: resumePath,
+                search_query: searchQuery
+            };
+            
+            try {
+                const response = await fetch('http://0.0.0.0:8000/analyse/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                if (response.status === 200) {
+                    const data = await response.json();
+                    
+                    console.log('Analysis response:', data);
+                    
+                    if (data.analysed_resume_link) {
+                        analysisStates[candidateId] = data.analysed_resume_link;
+                        
+                        const downloadBtn = document.getElementById(`downloadAnalysis_${candidateId}`);
+                        if (downloadBtn) {
+                            downloadBtn.style.display = 'inline-block';
+                            downloadBtn.disabled = false;
+                        }
+                        
+                        analyzeBtn.innerHTML = '✅ Analysis Complete';
+                        analyzeBtn.disabled = false;
+                    } else {
+                        throw new Error('analysed_resume_link not found in response');
+                    }
+                    
+                } else {
+                    throw new Error('Analysis failed');
+                }
+            } catch (error) {
+                console.error('Analysis error:', error);
+                analyzeBtn.innerHTML = '❌ Analysis Failed';
+                setTimeout(() => {
+                    analyzeBtn.innerHTML = originalText;
+                    analyzeBtn.disabled = false;
+                }, 3000);
+            }
+        }
+
+        function downloadAnalysis(candidateId) {
+            if (analysisStates[candidateId]) {
+                const analysisLink = analysisStates[candidateId];
+                
+                console.log('Opening analysis link for candidate', candidateId, ':', analysisLink);
+                
+                if (analysisLink.startsWith('http://') || analysisLink.startsWith('https://')) {
+                    window.open(analysisLink, '_blank');
+                } else {
+                    console.error('Invalid analysis link:', analysisLink);
+                    alert('Invalid analysis link. Please try analyzing again.');
+                }
+            } else {
+                console.error('No analysis link found for candidate:', candidateId);
+                alert('No analysis available. Please analyze the resume first.');
+            }
+        }
+
+        function showStatus(element, message, type) {
+            element.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+            setTimeout(() => {
+                element.innerHTML = '';
+            }, 5000);
+        }
+
+        // Initialize range value position
+        window.addEventListener('load', function() {
+            const slider = document.getElementById('similarityThreshold');
+            const rangeValue = document.getElementById('rangeValue');
+            const percent = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+            rangeValue.style.left = percent + '%';
+        });
+    </script>
+</body>
+</html>
